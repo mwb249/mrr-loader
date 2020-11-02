@@ -59,20 +59,23 @@ def update_features(config, gis):
     overlap_rows = pd.merge(left=features_sdf, right=records_sdf, how='inner', left_on=f_key, right_on=r_key)
 
     # Update feature attributes
-    for key in overlap_rows[f_key]:
-        try:
-            feature = [f for f in features_fset.features if f.attributes[f_key] == key][0]
-            record = [f for f in records_fset.features if f.attributes[r_key] == key][0]
-            feature.attributes[f_fld1] = record.attributes[r_fld1]  # Status field
-            feature.attributes[f_fld2] = record.attributes[r_fld2]
-            feature.attributes[f_fld3] = record.attributes[r_fld3]
-            feature.attributes[f_fld4] = record.attributes[r_fld4]
-            features_lyr.edit_features(updates=[feature])
-            print('Updated {}: {} status to {}'.format(f_key, feature.attributes[f_key], feature.attributes[f_fld1]),
-                  flush=True)
-        except Exception as e:
-            print('Exception: {}'.format(e))
-            continue
+    def update():
+        for key in overlap_rows[f_key]:
+            try:
+                feature = [f for f in features_fset.features if f.attributes[f_key] == key][0]
+                record = [f for f in records_fset.features if f.attributes[r_key] == key][0]
+                feature.attributes[f_fld1] = record.attributes[r_fld1]  # Status field
+                feature.attributes[f_fld2] = record.attributes[r_fld2]
+                feature.attributes[f_fld3] = record.attributes[r_fld3]
+                feature.attributes[f_fld4] = record.attributes[r_fld4]
+                features_lyr.edit_features(updates=[feature])
+                print('Updated {}: {} status to {}'.format(f_key, feature.attributes[f_key], feature.attributes[f_fld1]),
+                      flush=True)
+            except Exception as e:
+                print('Exception: {}'.format(e))
+                continue
+
+    update()
 
 
 if __name__ == '__main__':
