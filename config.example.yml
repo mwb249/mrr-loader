@@ -1,0 +1,28 @@
+---
+# WebGIS information
+portal_url: https://gis.somemunicipality.com/portal
+username: SomeUser
+password: SomePassword
+# If the profile field is used - portal_url, username, and passwords fields are ignored
+profile: Profile_SomeGIS
+feat_id:
+feat_lyr_num:
+rec_id:
+rec_tbl_num:
+
+# Feature to record field Mapping
+f_fields:
+  f1: Status
+  f2: field2
+  f3: field3
+  f4: field4
+  key: GlobalID
+
+r_fields:
+  f1: Status
+  f2: field2
+  f3: field3
+  f4: field4
+  date: date_field
+  key: ParentID
+...
