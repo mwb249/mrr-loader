@@ -29,12 +29,14 @@ def update_features(config, gis):
     f_flds = config['f_fields']
     f_fld1, f_fld2, f_fld3, f_fld4 = f_flds['f1'], f_flds['f2'], f_flds['f3'], f_flds['f4']
     f_key = f_flds['key']
+    f_flds_lst = [f_fld1, f_fld2, f_fld3, f_fld4, f_key]
 
     # Record fields
     r_flds = config['r_fields']
     r_fld1, r_fld2, r_fld3, r_fld4 = r_flds['f1'], r_flds['f2'], r_flds['f3'], r_flds['f4']
     r_date = r_flds['date']
     r_key = r_flds['key']
+    r_flds_lst = [r_fld1, r_fld2, r_fld3, r_fld4, r_date, r_key]
 
     # Construct SQL query (last 30 days of records)
     thirty_days = datetime.today() - timedelta(days=30)
@@ -43,39 +45,33 @@ def update_features(config, gis):
 
     # Features layer
     features_lyr = gis.content.get(config['feat_id']).layers[config['feat_lyr_num']]
-    features_fset = features_lyr.query()
+    features_fset = features_lyr.query(out_fields=f_flds_lst, return_geometry=False, return_all_records=True)
     features_sdf = features_fset.sdf
 
     # Records table
     records_tbl = gis.content.get(config['rec_id']).tables[config['rec_tbl_num']]
-    records_fset = records_tbl.query(where=sql,
-                                     out_fields='{}, {}, {}, {}, {}, {}'.format(r_fld1, r_fld2, r_fld3, r_fld4,
-                                                                                r_date, r_key))
+    records_fset = records_tbl.query(where=sql, out_fields=r_flds_lst)
     records_sdf = records_fset.sdf
-    records_sdf = records_sdf.sort_values(r_date, ascending=False)\
-        .drop_duplicates(subset=r_key)
+    records_sdf = records_sdf.sort_values(r_date, ascending=False).drop_duplicates(subset=r_key)
 
     # Overlapping rows
     overlap_rows = pd.merge(left=features_sdf, right=records_sdf, how='inner', left_on=f_key, right_on=r_key)
 
-    # Update feature attributes
-    def update():
-        for key in overlap_rows[f_key]:
-            try:
-                feature = [f for f in features_fset.features if f.attributes[f_key] == key][0]
-                record = [f for f in records_fset.features if f.attributes[r_key] == key][0]
-                feature.attributes[f_fld1] = record.attributes[r_fld1]  # Status field
-                feature.attributes[f_fld2] = record.attributes[r_fld2]
-                feature.attributes[f_fld3] = record.attributes[r_fld3]
-                feature.attributes[f_fld4] = record.attributes[r_fld4]
-                features_lyr.edit_features(updates=[feature])
-                print('Updated {}: {} status to {}'.format(f_key, feature.attributes[f_key], feature.attributes[f_fld1]),
-                      flush=True)
-            except Exception as e:
-                print('Exception: {}'.format(e))
-                continue
-
-    update()
+    # Update features
+    for key in overlap_rows[f_key]:
+        try:
+            feature = [f for f in features_fset.features if f.attributes[f_key] == key][0]
+            record = [f for f in records_fset.features if f.attributes[r_key] == key][0]
+            feature.attributes[f_fld1] = record.attributes[r_fld1]  # Status field
+            feature.attributes[f_fld2] = record.attributes[r_fld2]
+            feature.attributes[f_fld3] = record.attributes[r_fld3]
+            feature.attributes[f_fld4] = record.attributes[r_fld4]
+            features_lyr.edit_features(updates=[feature])
+            print('Updated {}: {} status to {}'.format(f_key, feature.attributes[f_key], feature.attributes[f_fld1]),
+                  flush=True)
+        except Exception as e:
+            print('Exception: {}'.format(e))
+            continue
 
 
 if __name__ == '__main__':
