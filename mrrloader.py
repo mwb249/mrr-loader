@@ -39,7 +39,7 @@ def update_features(config, gis):
     r_key = r_flds['key']
     r_flds_lst = [r_fld1, r_fld2, r_fld3, r_fld4, r_date, r_key]
 
-    # Construct SQL for Records table query (last 30 days)
+    # Construct SQL for Records table query
     lookback_days = datetime.today() - timedelta(days=cfg['lookback'])
     lookback_days_str = lookback_days.strftime('%Y-%m-%d %H:%M:%S')
     sql = "{} >= DATE '{}'".format(r_date, lookback_days_str)
