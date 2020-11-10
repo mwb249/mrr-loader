@@ -40,9 +40,9 @@ def update_features(config, gis):
     r_flds_lst = [r_fld1, r_fld2, r_fld3, r_fld4, r_date, r_key]
 
     # Construct SQL for Records table query (last 30 days)
-    thirty_days = datetime.today() - timedelta(days=30)
-    thirty_days_str = thirty_days.strftime('%Y-%m-%d %H:%M:%S')
-    sql = "{} >= DATE '{}'".format(r_date, thirty_days_str)
+    lookback_days = datetime.today() - timedelta(days=cfg['lookback'])
+    lookback_days_str = lookback_days.strftime('%Y-%m-%d %H:%M:%S')
+    sql = "{} >= DATE '{}'".format(r_date, lookback_days_str)
 
     # Features layer
     features_lyr = gis.content.get(config['feat_id']).layers[config['feat_lyr_num']]

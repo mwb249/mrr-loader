@@ -1,5 +1,5 @@
 ---
-# WebGIS information
+### WebGIS information ###
 portal_url: https://gis.somemunicipality.com/portal
 username: SomeUser
 password: SomePassword
@@ -12,7 +12,11 @@ rec_tbl_num:
 # Specify geodatabase version or leave blank to use DEFAULT version
 gdb_version:
 
-# Feature to record field Mapping
+### Number of days to look back at records ###
+lookback: 30
+
+### Feature-to-Record field Mapping ###
+# Feature fields
 f_fields:
   f1: field1
   f2: field2
@@ -20,7 +24,7 @@ f_fields:
   f4: field4
   date: date_field
   key: GlobalID
-
+# Record fields
 r_fields:
   f1: field1
   f2: field2
