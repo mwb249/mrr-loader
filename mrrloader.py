@@ -27,17 +27,19 @@ def update_features(config, gis):
 
     # Feature fields
     f_flds = config['f_fields']
-    f_fld1, f_fld2, f_fld3, f_fld4 = f_flds['f1'], f_flds['f2'], f_flds['f3'], f_flds['f4']
+    f_fld1, f_fld2, f_fld3, f_fld4, f_fld5, f_fld6, f_fld7, f_fld8 =\
+        f_flds['f1'], f_flds['f2'], f_flds['f3'], f_flds['f4'], f_flds['f5'], f_flds['f6'], f_flds['f7'], f_flds['f8']
     f_date = f_flds['date']
     f_key = f_flds['key']
-    f_flds_lst = [f_fld1, f_fld2, f_fld3, f_fld4, f_date, f_key]
+    f_flds_lst = [f_fld1, f_fld2, f_fld3, f_fld4, f_fld5, f_fld6, f_fld7, f_fld8, f_date, f_key]
 
     # Record fields
     r_flds = config['r_fields']
-    r_fld1, r_fld2, r_fld3, r_fld4 = r_flds['f1'], r_flds['f2'], r_flds['f3'], r_flds['f4']
+    r_fld1, r_fld2, r_fld3, r_fld4, r_fld5, r_fld6, r_fld7, r_fld8 =\
+        r_flds['f1'], r_flds['f2'], r_flds['f3'], r_flds['f4'], r_flds['f5'], r_flds['f6'], r_flds['f7'], r_flds['f8']
     r_date = r_flds['date']
     r_key = r_flds['key']
-    r_flds_lst = [r_fld1, r_fld2, r_fld3, r_fld4, r_date, r_key]
+    r_flds_lst = [r_fld1, r_fld2, r_fld3, r_fld4, r_fld5, r_fld6, r_fld7, r_fld8, r_date, r_key]
 
     # Construct SQL for Records table query
     lookback_days = datetime.today() - timedelta(days=cfg['lookback'])
@@ -74,6 +76,10 @@ def update_features(config, gis):
                 feature.attributes[f_fld2] = record.attributes[r_fld2]
                 feature.attributes[f_fld3] = record.attributes[r_fld3]
                 feature.attributes[f_fld4] = record.attributes[r_fld4]
+                feature.attributes[f_fld5] = record.attributes[r_fld5]
+                feature.attributes[f_fld6] = record.attributes[r_fld6]
+                feature.attributes[f_fld7] = record.attributes[r_fld7]
+                feature.attributes[f_fld8] = record.attributes[r_fld8]
                 feature.attributes[f_date] = record.attributes[r_date]
                 features_lyr.edit_features(updates=[feature], gdb_version=cfg['gdb_version'])
                 print('Updated Feature ID: {}'.format(key), flush=True)
