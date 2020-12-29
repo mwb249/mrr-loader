@@ -54,12 +54,17 @@ def update_features(config, gis):
     records_tbl = gis.content.get(config['rec_id']).tables[config['rec_tbl_num']]
     records_fset = records_tbl.query(where=sql, out_fields=r_flds_lst, gdb_version=cfg['gdb_version'])
     records_sdf = records_fset.sdf
+    if records_sdf.empty:
+        print('No records were returned for the given timeframe...\nExiting Script')
+        exit()
     records_sdf = records_sdf.sort_values(r_date, ascending=False).drop_duplicates(subset=r_key)
 
     # Overlapping rows
     overlap_rows = pd.merge(left=features_sdf, right=records_sdf, how='inner', left_on=f_key, right_on=r_key)
 
     # Update features if feature and record dates do not match
+    print('Comparing feature and table records...')
+    loop_count = 0
     for key in overlap_rows[f_key]:
         try:
             feature = [f for f in features_fset.features if f.attributes[f_key] == key][0]
@@ -71,10 +76,13 @@ def update_features(config, gis):
                 feature.attributes[f_fld4] = record.attributes[r_fld4]
                 feature.attributes[f_date] = record.attributes[r_date]
                 features_lyr.edit_features(updates=[feature], gdb_version=cfg['gdb_version'])
-                print('Updated ID: {}'.format(key), flush=True)
+                print('Updated Feature ID: {}'.format(key), flush=True)
+                loop_count += 1
         except Exception as e:
             print('Exception: {}'.format(e))
             continue
+    if loop_count == 0:
+        print('All records are up to date...')
 
 
 if __name__ == '__main__':
@@ -90,3 +98,5 @@ if __name__ == '__main__':
 
     # Update features with most recent record data
     update_features(cfg, webgis_conn)
+
+    print('Script complete, exiting')
