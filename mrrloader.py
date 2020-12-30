@@ -71,16 +71,29 @@ def update_features(config, gis):
         try:
             feature = [f for f in features_fset.features if f.attributes[f_key] == key][0]
             record = [f for f in records_fset.features if f.attributes[r_key] == key][0]
-            if feature.attributes[f_date] != record.attributes[r_date]:
-                feature.attributes[f_fld1] = record.attributes[r_fld1]
-                feature.attributes[f_fld2] = record.attributes[r_fld2]
-                feature.attributes[f_fld3] = record.attributes[r_fld3]
-                feature.attributes[f_fld4] = record.attributes[r_fld4]
-                feature.attributes[f_fld5] = record.attributes[r_fld5]
-                feature.attributes[f_fld6] = record.attributes[r_fld6]
-                feature.attributes[f_fld7] = record.attributes[r_fld7]
-                feature.attributes[f_fld8] = record.attributes[r_fld8]
-                feature.attributes[f_date] = record.attributes[r_date]
+
+            # Create variables for feature and record attribute properties
+            f_att, r_att = feature.attributes, record.attributes
+
+            # Create dictionaries to compare attributes
+            f_dict = {'f1': f_att[f_fld1], 'f2': f_att[f_fld2], 'f3': f_att[f_fld3], 'f4': f_att[f_fld4],
+                      'f5': f_att[f_fld5], 'f6': f_att[f_fld6], 'f7': f_att[f_fld7],'f8': f_att[f_fld8],
+                      'date': f_att[f_date]}
+            r_dict = {'f1': r_att[r_fld1], 'f2': r_att[r_fld2], 'f3': r_att[r_fld3], 'f4': r_att[r_fld4],
+                      'f5': r_att[r_fld5], 'f6': r_att[r_fld6], 'f7': r_att[r_fld7], 'f8': r_att[r_fld8],
+                      'date': r_att[r_date]}
+
+            # If the attribute dictionaries do not match, update feature
+            if f_dict != r_dict:
+                f_att[f_fld1] = r_att[r_fld1]
+                f_att[f_fld2] = r_att[r_fld2]
+                f_att[f_fld3] = r_att[r_fld3]
+                f_att[f_fld4] = r_att[r_fld4]
+                f_att[f_fld5] = r_att[r_fld5]
+                f_att[f_fld6] = r_att[r_fld6]
+                f_att[f_fld7] = r_att[r_fld7]
+                f_att[f_fld8] = r_att[r_fld8]
+                f_att[f_date] = r_att[r_date]
                 features_lyr.edit_features(updates=[feature], gdb_version=cfg['gdb_version'])
                 print('Updated Feature ID: {}'.format(key), flush=True)
                 loop_count += 1
