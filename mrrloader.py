@@ -77,7 +77,7 @@ def update_features(config, gis):
 
             # Create dictionaries to compare attributes
             f_dict = {'f1': f_att[f_fld1], 'f2': f_att[f_fld2], 'f3': f_att[f_fld3], 'f4': f_att[f_fld4],
-                      'f5': f_att[f_fld5], 'f6': f_att[f_fld6], 'f7': f_att[f_fld7],'f8': f_att[f_fld8],
+                      'f5': f_att[f_fld5], 'f6': f_att[f_fld6], 'f7': f_att[f_fld7], 'f8': f_att[f_fld8],
                       'date': f_att[f_date]}
             r_dict = {'f1': r_att[r_fld1], 'f2': r_att[r_fld2], 'f3': r_att[r_fld3], 'f4': r_att[r_fld4],
                       'f5': r_att[r_fld5], 'f6': r_att[r_fld6], 'f7': r_att[r_fld7], 'f8': r_att[r_fld8],
